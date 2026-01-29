@@ -2,7 +2,6 @@ package App.aaDesktopApp.aaForms;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,10 +9,11 @@ import BusinessLogic.aaTools.aaMunisionReader;
 import DataAccess.aaDAOs.*;
 import DataAccess.aaDTOs.*;
 import Infrastructure.Tools.aaCMD;
-import Infrastructure.aaExoTracer;
+import Infrastructure.Tools.aaCMDProgress;
+import Infrastructure.aaAppMSG;
 
 public class ExoTrooperForm extends JFrame {
-    // Componentes de la interfaz según la captura
+    // Componentes de la interfaz
     private JLabel lblTitulo;
     private JLabel lblAlumnos;
     private JLabel lblCedula1, lblCedula2;
@@ -56,25 +56,25 @@ public class ExoTrooperForm extends JFrame {
         lblTitulo.setFont(new Font("Arial", Font.BOLD, 28));
         lblTitulo.setForeground(new Color(30, 60, 120));
         
-        // Sección Alumno(s)
+        // Sección Alumno(s) - TU INFORMACIÓN
         lblAlumnos = new JLabel("Alumno(s):");
         lblAlumnos.setFont(new Font("Arial", Font.BOLD, 14));
         
         lblCedula1 = new JLabel("Cédula:");
         txtCedula1 = new JTextField(15);
-        txtCedula1.setText("1750000002"); // TU CÉDULA
+        txtCedula1.setText("1726965542"); // TU CÉDULA
         
         lblNombre1 = new JLabel("nombres completos:");
         txtNombre1 = new JTextField(20);
-        txtNombre1.setText("ANTHONNY ALMEIDA"); // TU NOMBRE
+        txtNombre1.setText("ARIANA THAIS ALOMOTO GRANIZO"); // TU NOMBRE
         
         lblCedula2 = new JLabel("Cédula:");
         txtCedula2 = new JTextField(15);
-        txtCedula2.setText("1750000001"); // COMPAÑERO
+        txtCedula2.setText(""); // COMPAÑERO (opcional)
         
         lblNombre2 = new JLabel("nombres completos:");
         txtNombre2 = new JTextField(20);
-        txtNombre2.setText("HEIDY PARRALES"); // COMPAÑERO
+        txtNombre2.setText(""); // COMPAÑERO (opcional)
         
         // Controles TipoExobot
         lblTipoExobot = new JLabel("TipoExobot");
@@ -115,7 +115,7 @@ public class ExoTrooperForm extends JFrame {
         tblExobots.setGridColor(new Color(180, 180, 180));
         tblExobots.setSelectionBackground(new Color(220, 240, 255));
         
-        // Botones de acción
+        // Botones de acción - SEGÚN TU CÉDULA (termina en 2)
         btnEntrenar = new JButton("Entrenar 'disparar'");
         btnEntrenar.setBackground(new Color(34, 139, 34));
         btnEntrenar.setForeground(Color.WHITE);
@@ -152,17 +152,19 @@ public class ExoTrooperForm extends JFrame {
         // Panel de botones de acción
         JPanel actionButtonsPanel = createActionButtonsPanel();
         
-        // Organizar todo en el panel principal
-        mainPanel.add(titlePanel, BorderLayout.NORTH);
-        mainPanel.add(alumnosPanel, BorderLayout.CENTER);
-        mainPanel.add(controlsPanel, BorderLayout.SOUTH);
+        // Crear un panel norte para título, alumnos y controles
+        JPanel northPanel = new JPanel(new BorderLayout(10, 10));
+        northPanel.add(titlePanel, BorderLayout.NORTH);
+        northPanel.add(alumnosPanel, BorderLayout.CENTER);
+        northPanel.add(controlsPanel, BorderLayout.SOUTH);
         
         // Crear un panel central para tabla y botones de acción
         JPanel centerPanel = new JPanel(new BorderLayout(10, 10));
         centerPanel.add(tablePanel, BorderLayout.CENTER);
         centerPanel.add(actionButtonsPanel, BorderLayout.SOUTH);
         
-        add(mainPanel, BorderLayout.NORTH);
+        // Agregar todo al frame
+        add(northPanel, BorderLayout.NORTH);
         add(centerPanel, BorderLayout.CENTER);
         
         // Centrar ventana
@@ -291,26 +293,29 @@ public class ExoTrooperForm extends JFrame {
     }
     
     private void loadInitialData() {
-        // Limpiar tabla
-        tableModel.setRowCount(0);
-        
-        // Agregar datos iniciales según la captura
-        tableModel.addRow(new Object[]{1, "ExoInfanteria", "SI", 22});
-        tableModel.addRow(new Object[]{2, "ExoAsalto", "NO", 0});
-        tableModel.addRow(new Object[]{3, "ExoInfanteria", "NO", 0});
-        tableModel.addRow(new Object[]{4, "ExoMedico", "NO", 0});
-        
-        aaCMD.print("Datos iniciales cargados en la interfaz");
+        try {
+            aaCMDProgress.showSpinner();
+            
+            // Limpiar tabla
+            tableModel.setRowCount(0);
+            
+            // Agregar datos iniciales según la captura
+            tableModel.addRow(new Object[]{1, "ExoInfanteria", "SI", 22});
+            tableModel.addRow(new Object[]{2, "ExoAsalto", "NO", 0});  // TU EXOBOT
+            tableModel.addRow(new Object[]{3, "ExoInfanteria", "NO", 0});
+            tableModel.addRow(new Object[]{4, "ExoMedico", "NO", 0});
+            
+            aaCMD.print("Datos iniciales cargados en la interfaz");
+        } catch (Exception e) {
+            aaCMD.printError("Error cargando datos iniciales: " + e.getMessage());
+        }
     }
     
     private void agregarExobot() {
         String tipo = txtTipoExobot.getText().trim();
         
         if (tipo.isEmpty()) {
-            JOptionPane.showMessageDialog(this, 
-                "Ingrese un tipo de Exobot", 
-                "Error", 
-                JOptionPane.ERROR_MESSAGE);
+            aaAppMSG.showError("Ingrese un tipo de Exobot");
             return;
         }
         
@@ -326,36 +331,34 @@ public class ExoTrooperForm extends JFrame {
         }
         
         if (!tipoValido) {
-            JOptionPane.showMessageDialog(this,
-                "Tipos válidos: ExoAsalto, ExoExplorador, ExoInfanteria, ExoMedico, ExoComando",
-                "Tipo Inválido",
-                JOptionPane.WARNING_MESSAGE);
+            aaAppMSG.showError("Tipos válidos: ExoAsalto, ExoExplorador, ExoInfanteria, ExoMedico, ExoComando");
             return;
         }
         
-        // Agregar a la tabla
-        int nuevoId = tableModel.getRowCount() + 1;
-        tableModel.addRow(new Object[]{nuevoId, tipo, "NO", 0});
-        
-        // Agregar al DAO
-        aaExoBotDTO nuevoExobot = new aaExoBotDTO(tipo);
-        exoBotDAO.aaAgregarExobot(nuevoExobot);
-        
-        // Limpiar campo
-        txtTipoExobot.setText("");
-        
-        // Log
-        aaCMD.printGood("Exobot agregado: " + tipo);
-        aaExoTracer.write("GOOD : Exobot agregado - " + tipo);
-        
-        JOptionPane.showMessageDialog(this,
-            "Exobot agregado exitosamente:\nID: " + nuevoId + "\nTipo: " + tipo,
-            "Éxito",
-            JOptionPane.INFORMATION_MESSAGE);
+        try {
+            // Agregar a la tabla
+            int nuevoId = tableModel.getRowCount() + 1;
+            tableModel.addRow(new Object[]{nuevoId, tipo, "NO", 0});
+            
+            // Agregar al DAO
+            aaExoBotDTO nuevoExobot = new aaExoBotDTO(tipo);
+            exoBotDAO.aaAgregarExobot(nuevoExobot);
+            
+            // Limpiar campo
+            txtTipoExobot.setText("");
+            
+            // Log
+            aaCMD.printGood("Exobot agregado: " + tipo);
+            
+            aaAppMSG.show("Exobot agregado exitosamente:\nID: " + nuevoId + "\nTipo: " + tipo);
+        } catch (Exception e) {
+            aaCMD.printError("Error agregando Exobot: " + e.getMessage());
+            aaAppMSG.showError("Error al agregar Exobot: " + e.getMessage());
+        }
     }
     
     private void buscarExobot() {
-        String busqueda = txtTipoExobot.getText().trim().toLowerCase();
+        String busqueda = txtTipoExobot.getText().trim();
         
         if (busqueda.isEmpty()) {
             // Si está vacío, recargar todos
@@ -363,20 +366,22 @@ public class ExoTrooperForm extends JFrame {
             return;
         }
         
-        // Filtrar la tabla
-        for (int i = tableModel.getRowCount() - 1; i >= 0; i--) {
-            String tipoExobot = ((String) tableModel.getValueAt(i, 1)).toLowerCase();
-            if (!tipoExobot.contains(busqueda)) {
-                tableModel.removeRow(i);
+        try {
+            // Filtrar la tabla
+            for (int i = tableModel.getRowCount() - 1; i >= 0; i--) {
+                String tipoExobot = ((String) tableModel.getValueAt(i, 1));
+                if (!tipoExobot.equalsIgnoreCase(busqueda)) {
+                    tableModel.removeRow(i);
+                }
             }
-        }
-        
-        if (tableModel.getRowCount() == 0) {
-            JOptionPane.showMessageDialog(this,
-                "No se encontraron Exobots con: " + busqueda,
-                "Búsqueda sin resultados",
-                JOptionPane.INFORMATION_MESSAGE);
-            loadInitialData(); // Recargar todos
+            
+            if (tableModel.getRowCount() == 0) {
+                aaAppMSG.show("No se encontraron Exobots con: " + busqueda);
+                loadInitialData(); // Recargar todos
+            }
+        } catch (Exception e) {
+            aaCMD.printError("Error buscando Exobot: " + e.getMessage());
+            aaAppMSG.showError("Error en la búsqueda");
         }
     }
     
@@ -384,10 +389,7 @@ public class ExoTrooperForm extends JFrame {
         int selectedRow = tblExobots.getSelectedRow();
         
         if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this,
-                "Seleccione un Exobot de la tabla para entrenar",
-                "Selección requerida",
-                JOptionPane.WARNING_MESSAGE);
+            aaAppMSG.showError("Seleccione un Exobot de la tabla para entrenar");
             return;
         }
         
@@ -397,10 +399,7 @@ public class ExoTrooperForm extends JFrame {
         
         // Verificar si ya está entrenado
         if ("SI".equals(entrenado)) {
-            JOptionPane.showMessageDialog(this,
-                "Este Exobot ya está entrenado",
-                "Información",
-                JOptionPane.INFORMATION_MESSAGE);
+            aaAppMSG.show("Este Exobot ya está entrenado");
             return;
         }
         
@@ -408,44 +407,51 @@ public class ExoTrooperForm extends JFrame {
         if (!"ExoAsalto".equals(tipoExobot)) {
             String mensajeError = "SoldadoExperto Fusil disparar";
             aaCMD.printError(mensajeError);
-            aaExoTracer.write("ERROR: " + mensajeError);
             
-            JOptionPane.showMessageDialog(this,
-                "Solo ExoAsalto puede ser entrenado para 'disparar' con Fusil\n" +
-                "Su cédula termina en 2 → ExoAsalto",
-                "Error de Entrenamiento",
-                JOptionPane.ERROR_MESSAGE);
+            aaAppMSG.showError("Solo ExoAsalto puede ser entrenado para 'disparar' con Fusil\n" +
+                "Su cédula termina en 2 → ExoAsalto");
             return;
         }
         
-        // Entrenar exitosamente
-        String mensajeExito = "SoldadoExperto Fusil disparar";
-        aaCMD.printGood(mensajeExito);
-        aaExoTracer.write("GOOD : " + mensajeExito);
-        
-        // Actualizar tabla
-        tableModel.setValueAt("SI", selectedRow, 2);
-        
-        // Actualizar DAO
-        exoBotDAO.aaActualizarEntrenamiento(idExobot, true);
-        
-        JOptionPane.showMessageDialog(this,
-            "¡Exobot entrenado exitosamente!\n" +
-            "Tipo: " + tipoExobot + "\n" +
-            "Arma: Fusil\n" +
-            "Acción: disparar",
-            "Entrenamiento Completado",
-            JOptionPane.INFORMATION_MESSAGE);
+        try {
+            // Crear soldado experto en Fusil
+            BusinessLogic.aaEntities.aaSoldadoExperto soldadoExperto = 
+                new BusinessLogic.aaEntities.aaSoldadoExperto("Soldado Experto Fusil", "Fusil");
+            
+            // Crear IABOT para asistencia
+            BusinessLogic.aaEntities.aaIABOT iabot = new BusinessLogic.aaEntities.aaIABOT();
+            
+            // Crear Exobot
+            BusinessLogic.aaEntities.aaExoAsalto exobot = new BusinessLogic.aaEntities.aaExoAsalto();
+            
+            // Asistencia del IABOT en el entrenamiento
+            iabot.asistirEntrenamiento(soldadoExperto, exobot);
+            
+            // Entrenar exitosamente
+            String mensajeExito = "SoldadoExperto Fusil disparar";
+            aaCMD.printGood(mensajeExito);
+            
+            // Actualizar tabla
+            tableModel.setValueAt("SI", selectedRow, 2);
+            
+            // Actualizar DAO
+            exoBotDAO.aaActualizarEntrenamiento(idExobot, true);
+            
+            aaAppMSG.show("¡Exobot entrenado exitosamente!\n" +
+                "Tipo: " + tipoExobot + "\n" +
+                "Arma: Fusil\n" +
+                "Acción: disparar");
+        } catch (Exception e) {
+            aaCMD.printError("Error entrenando Exobot: " + e.getMessage());
+            aaAppMSG.showError("Error en el entrenamiento: " + e.getMessage());
+        }
     }
     
     private void ejecutarAccionArma() {
         int selectedRow = tblExobots.getSelectedRow();
         
         if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this,
-                "Seleccione un Exobot de la tabla para ejecutar acción",
-                "Selección requerida",
-                JOptionPane.WARNING_MESSAGE);
+            aaAppMSG.showError("Seleccione un Exobot de la tabla para ejecutar acción");
             return;
         }
         
@@ -456,54 +462,67 @@ public class ExoTrooperForm extends JFrame {
         // Verificar si está entrenado
         if (!"SI".equals(entrenado)) {
             aaCMD.printError("El Exobot debe estar entrenado primero");
-            JOptionPane.showMessageDialog(this,
-                "El Exobot debe estar entrenado antes de ejecutar acciones",
-                "Error",
-                JOptionPane.ERROR_MESSAGE);
+            aaAppMSG.showError("El Exobot debe estar entrenado antes de ejecutar acciones");
             return;
         }
         
         // Verificar que sea ExoAsalto
         if (!"ExoAsalto".equals(tipoExobot)) {
             aaCMD.printError("Solo ExoAsalto puede ejecutar 'disparar_Fusil'");
+            aaAppMSG.showError("Solo ExoAsalto puede ejecutar 'disparar_Fusil'");
             return;
         }
         
-        // Leer munición del archivo
-        String municion = leerMunicionDelArchivo();
-        
-        if (municion.contains("No encontrado")) {
-            String errorMsg = "Fusil disparar " + municion;
-            aaCMD.printError(errorMsg);
-            aaExoTracer.write("ERROR: " + errorMsg);
+        try {
+            // Leer munición del archivo
+            String municion = leerMunicionDelArchivo();
             
-            JOptionPane.showMessageDialog(this,
-                "No se encontró munición para Fusil en el archivo",
-                "Error de Munición",
-                JOptionPane.ERROR_MESSAGE);
-            return;
+            if (municion.contains("No encontrado") || municion.contains("Error")) {
+                String errorMsg = "Fusil disparar " + municion;
+                aaCMD.printError(errorMsg);
+                
+                aaAppMSG.showError("No se encontró munición para Fusil en el archivo");
+                return;
+            }
+            
+            // Crear Exobot y IAEXO
+            BusinessLogic.aaEntities.aaExoAsalto exobot = new BusinessLogic.aaEntities.aaExoAsalto();
+            BusinessLogic.aaEntities.aaIAEXO iaexo = new BusinessLogic.aaEntities.aaIAEXO(exobot);
+            
+            // Crear Fusil y recurso
+            BusinessLogic.aaEntities.aaFusil fusil = new BusinessLogic.aaEntities.aaFusil();
+            BusinessLogic.aaEntities.aaRecurso recurso = new BusinessLogic.aaEntities.aaRecurso("Munición_Fusil", 10);
+            fusil.aaSetRecurso(recurso);
+            exobot.aaSetArma(fusil);
+            
+            // Ejecutar acción a través de IAEXO
+            boolean accionExitosa = iaexo.aaEjecutarAccion();
+            
+            if (accionExitosa) {
+                // Incrementar contador de acciones
+                int accionesActuales = (int) tableModel.getValueAt(selectedRow, 3);
+                tableModel.setValueAt(accionesActuales + 1, selectedRow, 3);
+                
+                // Actualizar DAO
+                exoBotDAO.aaIncrementarAcciones(idExobot);
+                
+                // Log exitoso
+                String successMsg = "Fusil disparar " + municion;
+                aaCMD.printGood(successMsg);
+                
+                aaAppMSG.show("¡Acción ejecutada exitosamente!\n" +
+                    "TipoArma: Fusil\n" +
+                    "AcciónArma: disparar\n" +
+                    "Munición: " + municion + "\n" +
+                    "Total acciones: " + (accionesActuales + 1));
+            } else {
+                aaCMD.printError("Fallo la ejecución de la acción");
+                aaAppMSG.showError("Fallo la ejecución de la acción");
+            }
+        } catch (Exception e) {
+            aaCMD.printError("Error ejecutando acción: " + e.getMessage());
+            aaAppMSG.showError("Error ejecutando acción: " + e.getMessage());
         }
-        
-        // Incrementar contador de acciones
-        int accionesActuales = (int) tableModel.getValueAt(selectedRow, 3);
-        tableModel.setValueAt(accionesActuales + 1, selectedRow, 3);
-        
-        // Actualizar DAO
-        exoBotDAO.aaIncrementarAcciones(idExobot);
-        
-        // Log exitoso
-        String successMsg = "Fusil disparar " + municion;
-        aaCMD.printGood(successMsg);
-        aaExoTracer.write("GOOD : " + successMsg);
-        
-        JOptionPane.showMessageDialog(this,
-            "¡Acción ejecutada exitosamente!\n" +
-            "TipoArma: Fusil\n" +
-            "AcciónArma: disparar\n" +
-            "Munición/Energía: " + municion + "\n" +
-            "Total acciones: " + (accionesActuales + 1),
-            "Acción Exitosa",
-            JOptionPane.INFORMATION_MESSAGE);
     }
     
     private String leerMunicionDelArchivo() {
@@ -523,11 +542,15 @@ public class ExoTrooperForm extends JFrame {
     }
     
     public static void main(String[] args) {
-        // Para probar directamente el formulario
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new ExoTrooperForm();
+                try {
+                    aaCMDProgress.showBar("#");
+                    new ExoTrooperForm();
+                } catch (Exception e) {
+                    aaCMD.printError("Error iniciando aplicación: " + e.getMessage());
+                }
             }
         });
     }
