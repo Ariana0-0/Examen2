@@ -6,7 +6,6 @@ import java.time.LocalDate;
 public class aaPersonaDAO {
 
     public aaPersonaDTO aaLogin(String cedula, String clave) {
-        // Credenciales hardcodeadas según requerimiento
         if (cedula.equals("patmic") && clave.equals("123")) {
             aaPersonaDTO p = new aaPersonaDTO();
             p.setAaIdPersona(1);

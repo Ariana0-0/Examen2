@@ -1,0 +1,7 @@
+2026-01-29 00:45:05 - Directorio creado: C:\Users\thais\OneDrive\Documentos\GitHub\Examen2\storage\DataFiles
+2026-01-29 00:45:05 - GOOD : ✓ Acceso concedido
+2026-01-29 00:45:05 - GOOD : Acceso concedido para: 1726965542
+2026-01-29 00:45:05 - Iniciando interfaz gráfica...
+2026-01-29 00:45:06 - Datos iniciales cargados en la interfaz
+2026-01-29 00:45:06 - Interfaz gráfica cargada exitosamente
+2026-01-29 00:45:28 - GOOD : Exobot agregado: ExoAsalto

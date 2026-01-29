@@ -10,7 +10,6 @@ public class DataHelperSQLiteDAO {
     
     public DataHelperSQLiteDAO() {
         aaExobots = new ArrayList<>();
-        // Datos iniciales
         aaExobots.add(new aaExoBotDTO("ExoInfanteria"));
         aaExobots.add(new aaExoBotDTO("ExoAsalto"));
     }

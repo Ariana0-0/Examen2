@@ -4,15 +4,13 @@ public class aaExoAsalto extends aaExoBot {
     
     private String aaArmaEquipada; // "Fusil" o "Revolver"
     
-    // Constructor
     public aaExoAsalto() {
         this.aaTipo = "ExoAsalto";
         this.aaEntrenado = false;
         this.aaAccionesRealizadas = 0;
-        this.aaArmaEquipada = "Fusil"; // Por defecto Fusil (tu arma principal)
+        this.aaArmaEquipada = "Fusil"; //  arma principal
     }
     
-    // Constructor con arma específica
     public aaExoAsalto(String armaInicial) {
         this();
         if (armaInicial.equals("Revolver") || armaInicial.equals("Fusil")) {
@@ -20,13 +18,11 @@ public class aaExoAsalto extends aaExoBot {
         }
     }
     
-    // Método para entrenar
     public void aaEntrenar() {
         this.aaEntrenado = true;
         System.out.println("ExoAsalto entrenado para usar " + aaArmaEquipada);
     }
     
-    // Entrenar para arma específica
     public void aaEntrenar(String arma) {
         if (arma.equals("Fusil") || arma.equals("Revolver")) {
             this.aaArmaEquipada = arma;
@@ -53,7 +49,6 @@ public class aaExoAsalto extends aaExoBot {
         return false;
     }
     
-    // Disparar con arma específica
     public boolean aaDispararCon(String tipoArma) {
         if (aaArma != null && aaArma.aaGetTipo().equals(tipoArma)) {
             return aaDisparar();
@@ -64,23 +59,20 @@ public class aaExoAsalto extends aaExoBot {
         }
     }
     
-    // Disparar con Fusil (tu arma principal)
     public boolean aaDispararConFusil() {
         return aaDispararCon("Fusil");
     }
     
-    // Disparar con Revolver (alternativa)
     public boolean aaDispararConRevolver() {
         return aaDispararCon("Revolver");
     }
     
     @Override
     public boolean aaEjecutarAccion() {
-        // Por defecto usa el Fusil (tu arma según cédula que termina en 2)
+        
         return aaDispararConFusil();
     }
     
-    // Cambiar arma equipada
     public void aaCambiarArma(String nuevaArma) {
         if (nuevaArma.equals("Fusil") || nuevaArma.equals("Revolver")) {
             this.aaArmaEquipada = nuevaArma;
@@ -88,7 +80,6 @@ public class aaExoAsalto extends aaExoBot {
         }
     }
     
-    // Getters
     public String getAaArmaEquipada() {
         return aaArmaEquipada;
     }

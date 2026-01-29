@@ -9,7 +9,6 @@ public class aaExoBotDAO {
     private static int nextId = 1;
 
     static {
-        // Datos iniciales según tu captura
         aaTabla.add(crear(1, "ExoInfanteria", "SI", 22, 1));
         aaTabla.add(crear(2, "ExoAsalto", "NO", 0, 1));
         aaTabla.add(crear(3, "ExoInfanteria", "NO", 0, 1));

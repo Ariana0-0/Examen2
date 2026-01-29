@@ -7,10 +7,8 @@ public class aaArmaDAO {
     public aaArmaDTO aaGetArmaPorExobot(String tipoExobot) {
         aaArmaDTO a = new aaArmaDTO();
         
-        // Asignar ID
         a.setAaIdArma(1);
         
-        // Según tu cédula (termina en 2): ExoAsalto con Fusil
         if (tipoExobot.equals("ExoAsalto")) {
             a.setAaTipo("Fusil");
             a.setAaAccion("disparar");

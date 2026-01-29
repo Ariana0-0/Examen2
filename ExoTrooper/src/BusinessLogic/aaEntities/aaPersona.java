@@ -6,23 +6,19 @@ public abstract class aaPersona {
     protected String aaClave;
     protected Integer aaIdPersona;
 
-    // Constructor por defecto
     public aaPersona() {
     }
 
-    // Constructor con parámetros
     public aaPersona(String nombre, String cedula, String clave) {
         this.aaNombre = nombre;
         this.aaCedula = cedula;
         this.aaClave = clave;
     }
 
-    // Método de autenticación
     public boolean aaAutenticar(String cedula, String clave) {
         return this.aaCedula.equals(cedula) && this.aaClave.equals(clave);
     }
 
-    // Getters y Setters
     public String getAaNombre() {
         return aaNombre;
     }

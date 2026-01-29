@@ -32,6 +32,5 @@ public abstract class aaExoBot implements IIAEXO {
         aaAccionesRealizadas++;
     }
     
-    // Este método será implementado por las clases concretas
     public abstract boolean aaDisparar();
 }

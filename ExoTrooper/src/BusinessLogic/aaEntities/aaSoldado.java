@@ -5,20 +5,17 @@ public class aaSoldado extends aaPersona {
     protected String aaRango;
     protected String aaEspecialidad;
 
-    // Constructor
     public aaSoldado(String nombre, String cedula, String clave, String rango, String especialidad) {
         super(nombre, cedula, clave);
         this.aaRango = rango;
         this.aaEspecialidad = especialidad;
     }
 
-    // Asignar un Exobot al soldado
     public void aaAsignarExobot(aaExoBot exobot) {
         this.aaExobot = exobot;
         System.out.println("Exobot asignado al soldado: " + aaNombre);
     }
 
-    // Entrenar con el Exobot
     public boolean aaEntrenarExobot() {
         if (aaExobot != null) {
             if (aaExobot instanceof aaExoAsalto) {
@@ -29,7 +26,6 @@ public class aaSoldado extends aaPersona {
         return false;
     }
 
-    // Ejecutar acción con el Exobot
     public boolean aaEjecutarAccionExobot() {
         if (aaExobot != null && aaExobot.aaIsEntrenado()) {
             return aaExobot.aaEjecutarAccion();
@@ -37,7 +33,6 @@ public class aaSoldado extends aaPersona {
         return false;
     }
 
-    // Getters y Setters adicionales
     public aaExoBot getAaExobot() {
         return aaExobot;
     }

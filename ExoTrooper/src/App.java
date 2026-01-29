@@ -4,7 +4,7 @@ import Infrastructure.Tools.aaCMDInput;
 import Infrastructure.Tools.aaCMDProgress;
 import Infrastructure.aaExoTracer;
 import javax.swing.SwingUtilities;
-
+//refactorizacoón se agregaron metodos
 public class App {
     public static void main(String[] args) {
         try {
@@ -24,7 +24,7 @@ public class App {
 
             while (intentos < MAX_INTENTOS) {
                 System.out.println("\n--- Intento " + (intentos + 1) + " de " + MAX_INTENTOS + " ---");
-                String user = aaCMDInput.read("Usuario (patmic o cédula): ");
+                String user = aaCMDInput.read("Usuario o cédula: ");
                 String pass = aaCMDInput.read("Clave: ");
 
                 // Validar credenciales

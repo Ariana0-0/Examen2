@@ -18,7 +18,6 @@ public abstract class aaArma {
 
     public abstract boolean aaDisparar();
     
-    // Método para verificar si tiene recurso
     public boolean aaTieneRecurso() {
         return aaRecurso != null && aaRecurso.aaGetCantidad() > 0;
     }

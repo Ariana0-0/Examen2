@@ -1,6 +1,7 @@
 package Infrastructure.Tools;
 
 import java.util.Scanner;
+//Refactorización
 
 public class aaCMDInput {
     

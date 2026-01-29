@@ -24,6 +24,5 @@ public class aaIAEXO implements IIAEXO {
     public void aaAsistirEntrenamiento(aaSoldadoExperto soldadoExperto) {
         System.out.println("IAEXO: Asistiendo en entrenamiento con " + 
                           soldadoExperto.getAaNombre());
-        // Lógica de asistencia IA para entrenamiento
     }
 }

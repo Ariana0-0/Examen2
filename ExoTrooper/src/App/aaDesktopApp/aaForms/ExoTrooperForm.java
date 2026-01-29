@@ -5,6 +5,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import BusinessLogic.aaTools.aaMunisionReader;
 import DataAccess.aaDAOs.*;
 import DataAccess.aaDTOs.*;
@@ -22,7 +23,7 @@ public class ExoTrooperForm extends JFrame {
     private JTextField txtNombre1, txtNombre2;
     
     private JLabel lblTipoExobot;
-    private JTextField txtTipoExobot;
+    private JComboBox<String> cmbTipoExobot;
     private JButton btnAgregar;
     private JButton btnBuscar;
     
@@ -63,34 +64,45 @@ public class ExoTrooperForm extends JFrame {
         lblCedula1 = new JLabel("Cédula:");
         txtCedula1 = new JTextField(15);
         txtCedula1.setText("1726965542"); // TU CÉDULA
+        txtCedula1.setEditable(false);
         
         lblNombre1 = new JLabel("nombres completos:");
         txtNombre1 = new JTextField(20);
         txtNombre1.setText("ARIANA THAIS ALOMOTO GRANIZO"); // TU NOMBRE
+        txtNombre1.setEditable(false);
         
         lblCedula2 = new JLabel("Cédula:");
         txtCedula2 = new JTextField(15);
         txtCedula2.setText(""); // COMPAÑERO (opcional)
+        txtCedula2.setEditable(false);
         
         lblNombre2 = new JLabel("nombres completos:");
         txtNombre2 = new JTextField(20);
         txtNombre2.setText(""); // COMPAÑERO (opcional)
+        txtNombre2.setEditable(false);
         
-        // Controles TipoExobot
+        // Controles TipoExobot - CON COMBOBOX PARA EL PUNTO EXTRA
         lblTipoExobot = new JLabel("TipoExobot");
         lblTipoExobot.setFont(new Font("Arial", Font.BOLD, 12));
         
-        txtTipoExobot = new JTextField(15);
+        // COMBOBOX en lugar de TextField
+        String[] tiposExobots = {"Seleccione tipo...", "ExoAsalto", "ExoExplorador", 
+                                "ExoInfanteria", "ExoMedico", "ExoComando"};
+        cmbTipoExobot = new JComboBox<>(tiposExobots);
+        cmbTipoExobot.setPreferredSize(new Dimension(150, 25));
+        cmbTipoExobot.setFont(new Font("Arial", Font.PLAIN, 12));
         
         btnAgregar = new JButton("Agregar");
         btnAgregar.setBackground(new Color(70, 130, 180));
         btnAgregar.setForeground(Color.WHITE);
         btnAgregar.setFont(new Font("Arial", Font.BOLD, 12));
+        btnAgregar.setCursor(new Cursor(Cursor.HAND_CURSOR));
         
         btnBuscar = new JButton("Buscar");
         btnBuscar.setBackground(new Color(100, 149, 237));
         btnBuscar.setForeground(Color.WHITE);
         btnBuscar.setFont(new Font("Arial", Font.BOLD, 12));
+        btnBuscar.setCursor(new Cursor(Cursor.HAND_CURSOR));
         
         // Tabla
         String[] columnNames = {"IdExobot", "TipoExobot", "Entreno", "No. Accion"};
@@ -114,6 +126,7 @@ public class ExoTrooperForm extends JFrame {
         tblExobots.getTableHeader().setBackground(new Color(200, 220, 240));
         tblExobots.setGridColor(new Color(180, 180, 180));
         tblExobots.setSelectionBackground(new Color(220, 240, 255));
+        tblExobots.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         
         // Botones de acción - SEGÚN TU CÉDULA (termina en 2)
         btnEntrenar = new JButton("Entrenar 'disparar'");
@@ -121,12 +134,14 @@ public class ExoTrooperForm extends JFrame {
         btnEntrenar.setForeground(Color.WHITE);
         btnEntrenar.setFont(new Font("Arial", Font.BOLD, 14));
         btnEntrenar.setPreferredSize(new Dimension(200, 40));
+        btnEntrenar.setCursor(new Cursor(Cursor.HAND_CURSOR));
         
         btnAccionArma = new JButton("'disparar_Fusil'");
         btnAccionArma.setBackground(new Color(178, 34, 34));
         btnAccionArma.setForeground(Color.WHITE);
         btnAccionArma.setFont(new Font("Arial", Font.BOLD, 14));
         btnAccionArma.setPreferredSize(new Dimension(200, 40));
+        btnAccionArma.setCursor(new Cursor(Cursor.HAND_CURSOR));
     }
     
     private void setupLayout() {
@@ -154,12 +169,14 @@ public class ExoTrooperForm extends JFrame {
         
         // Crear un panel norte para título, alumnos y controles
         JPanel northPanel = new JPanel(new BorderLayout(10, 10));
+        northPanel.setBackground(new Color(240, 240, 245));
         northPanel.add(titlePanel, BorderLayout.NORTH);
         northPanel.add(alumnosPanel, BorderLayout.CENTER);
         northPanel.add(controlsPanel, BorderLayout.SOUTH);
         
         // Crear un panel central para tabla y botones de acción
         JPanel centerPanel = new JPanel(new BorderLayout(10, 10));
+        centerPanel.setBackground(new Color(240, 240, 245));
         centerPanel.add(tablePanel, BorderLayout.CENTER);
         centerPanel.add(actionButtonsPanel, BorderLayout.SOUTH);
         
@@ -215,6 +232,10 @@ public class ExoTrooperForm extends JFrame {
     private JPanel createControlsPanel() {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 15));
         panel.setBackground(Color.WHITE);
+        panel.setBorder(BorderFactory.createTitledBorder(
+            BorderFactory.createLineBorder(new Color(180, 180, 180), 1),
+            "Gestión de Exobots"
+        ));
         
         // Crear un subpanel para alinear verticalmente
         JPanel verticalPanel = new JPanel();
@@ -226,14 +247,16 @@ public class ExoTrooperForm extends JFrame {
         labelPanel.setBackground(Color.WHITE);
         labelPanel.add(lblTipoExobot);
         
-        // Panel para controles
+        // Panel para controles (COMBOBOX + botones)
         JPanel inputPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
         inputPanel.setBackground(Color.WHITE);
-        inputPanel.add(txtTipoExobot);
+        inputPanel.add(cmbTipoExobot);
+        inputPanel.add(Box.createHorizontalStrut(10));
         inputPanel.add(btnAgregar);
         inputPanel.add(btnBuscar);
         
         verticalPanel.add(labelPanel);
+        verticalPanel.add(Box.createVerticalStrut(5));
         verticalPanel.add(inputPanel);
         
         panel.add(verticalPanel);
@@ -242,11 +265,15 @@ public class ExoTrooperForm extends JFrame {
     
     private JPanel createTablePanel() {
         JPanel panel = new JPanel(new BorderLayout());
-        panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        panel.setBorder(BorderFactory.createTitledBorder(
+            BorderFactory.createLineBorder(new Color(180, 180, 180), 2),
+            "Lista de Exobots"
+        ));
         panel.setBackground(Color.WHITE);
         
         JScrollPane scrollPane = new JScrollPane(tblExobots);
         scrollPane.setBorder(BorderFactory.createLineBorder(new Color(180, 180, 180)));
+        scrollPane.setPreferredSize(new Dimension(800, 250));
         
         panel.add(scrollPane, BorderLayout.CENTER);
         return panel;
@@ -255,6 +282,10 @@ public class ExoTrooperForm extends JFrame {
     private JPanel createActionButtonsPanel() {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 50, 20));
         panel.setBackground(new Color(240, 240, 245));
+        panel.setBorder(BorderFactory.createTitledBorder(
+            BorderFactory.createLineBorder(new Color(180, 180, 180), 1),
+            "Acciones del Exobot Seleccionado"
+        ));
         
         panel.add(btnEntrenar);
         panel.add(btnAccionArma);
@@ -294,8 +325,6 @@ public class ExoTrooperForm extends JFrame {
     
     private void loadInitialData() {
         try {
-            aaCMDProgress.showSpinner();
-            
             // Limpiar tabla
             tableModel.setRowCount(0);
             
@@ -312,10 +341,10 @@ public class ExoTrooperForm extends JFrame {
     }
     
     private void agregarExobot() {
-        String tipo = txtTipoExobot.getText().trim();
+        String tipo = (String) cmbTipoExobot.getSelectedItem();
         
-        if (tipo.isEmpty()) {
-            aaAppMSG.showError("Ingrese un tipo de Exobot");
+        if (tipo == null || tipo.equals("Seleccione tipo...")) {
+            aaAppMSG.showError("Seleccione un tipo de Exobot válido");
             return;
         }
         
@@ -323,19 +352,38 @@ public class ExoTrooperForm extends JFrame {
         String[] tiposValidos = {"ExoAsalto", "ExoExplorador", "ExoInfanteria", "ExoMedico", "ExoComando"};
         boolean tipoValido = false;
         for (String valido : tiposValidos) {
-            if (tipo.equalsIgnoreCase(valido)) {
+            if (tipo.equals(valido)) {
                 tipoValido = true;
-                tipo = valido; // Normalizar a formato correcto
                 break;
             }
         }
         
         if (!tipoValido) {
-            aaAppMSG.showError("Tipos válidos: ExoAsalto, ExoExplorador, ExoInfanteria, ExoMedico, ExoComando");
+            aaAppMSG.showError("Seleccione un tipo de Exobot válido de la lista");
             return;
         }
         
         try {
+            // Verificar si ya existe un Exobot de este tipo
+            boolean existe = false;
+            for (int i = 0; i < tableModel.getRowCount(); i++) {
+                if (tableModel.getValueAt(i, 1).equals(tipo)) {
+                    existe = true;
+                    break;
+                }
+            }
+            
+            if (existe) {
+                int respuesta = JOptionPane.showConfirmDialog(this,
+                    "Ya existe un Exobot de tipo " + tipo + ". ¿Desea agregar otro?",
+                    "Confirmar",
+                    JOptionPane.YES_NO_OPTION);
+                
+                if (respuesta != JOptionPane.YES_OPTION) {
+                    return;
+                }
+            }
+            
             // Agregar a la tabla
             int nuevoId = tableModel.getRowCount() + 1;
             tableModel.addRow(new Object[]{nuevoId, tipo, "NO", 0});
@@ -344,8 +392,8 @@ public class ExoTrooperForm extends JFrame {
             aaExoBotDTO nuevoExobot = new aaExoBotDTO(tipo);
             exoBotDAO.aaAgregarExobot(nuevoExobot);
             
-            // Limpiar campo
-            txtTipoExobot.setText("");
+            // Limpiar selección
+            cmbTipoExobot.setSelectedIndex(0);
             
             // Log
             aaCMD.printGood("Exobot agregado: " + tipo);
@@ -358,30 +406,66 @@ public class ExoTrooperForm extends JFrame {
     }
     
     private void buscarExobot() {
-        String busqueda = txtTipoExobot.getText().trim();
+        String tipoSeleccionado = (String) cmbTipoExobot.getSelectedItem();
         
-        if (busqueda.isEmpty()) {
-            // Si está vacío, recargar todos
+        if (tipoSeleccionado == null || tipoSeleccionado.equals("Seleccione tipo...")) {
+            // Mostrar todos los Exobots
             loadInitialData();
+            aaCMD.print("Mostrando todos los Exobots");
             return;
         }
         
         try {
-            // Filtrar la tabla
-            for (int i = tableModel.getRowCount() - 1; i >= 0; i--) {
-                String tipoExobot = ((String) tableModel.getValueAt(i, 1));
-                if (!tipoExobot.equalsIgnoreCase(busqueda)) {
-                    tableModel.removeRow(i);
+            // Filtrar la tabla por el tipo seleccionado
+            DefaultTableModel modeloFiltrado = new DefaultTableModel(
+                new String[]{"IdExobot", "TipoExobot", "Entreno", "No. Accion"}, 0) {
+                @Override
+                public boolean isCellEditable(int row, int column) {
+                    return false;
+                }
+            };
+            
+            // Copiar solo las filas que coinciden con el tipo seleccionado
+            for (int i = 0; i < tableModel.getRowCount(); i++) {
+                String tipoExobot = (String) tableModel.getValueAt(i, 1);
+                if (tipoExobot.equals(tipoSeleccionado)) {
+                    Object[] fila = new Object[4];
+                    fila[0] = tableModel.getValueAt(i, 0);
+                    fila[1] = tableModel.getValueAt(i, 1);
+                    fila[2] = tableModel.getValueAt(i, 2);
+                    fila[3] = tableModel.getValueAt(i, 3);
+                    modeloFiltrado.addRow(fila);
                 }
             }
             
-            if (tableModel.getRowCount() == 0) {
-                aaAppMSG.show("No se encontraron Exobots con: " + busqueda);
-                loadInitialData(); // Recargar todos
+            // Actualizar la tabla con los resultados filtrados
+            tblExobots.setModel(modeloFiltrado);
+            
+            if (modeloFiltrado.getRowCount() == 0) {
+                aaAppMSG.show("No se encontraron Exobots de tipo: " + tipoSeleccionado);
+                // Restaurar tabla original
+                tblExobots.setModel(tableModel);
+            } else {
+                aaCMD.printGood("Búsqueda completada: " + tipoSeleccionado + 
+                              " (" + modeloFiltrado.getRowCount() + " resultados)");
+                
+                // Preguntar si quiere volver a ver todos
+                int respuesta = JOptionPane.showConfirmDialog(this,
+                    "Se encontraron " + modeloFiltrado.getRowCount() + 
+                    " Exobots de tipo " + tipoSeleccionado + 
+                    ".\n¿Desea volver a ver todos los Exobots?",
+                    "Búsqueda completada",
+                    JOptionPane.YES_NO_OPTION);
+                
+                if (respuesta == JOptionPane.YES_OPTION) {
+                    // Restaurar tabla original
+                    tblExobots.setModel(tableModel);
+                    cmbTipoExobot.setSelectedIndex(0);
+                }
             }
         } catch (Exception e) {
             aaCMD.printError("Error buscando Exobot: " + e.getMessage());
-            aaAppMSG.showError("Error en la búsqueda");
+            aaAppMSG.showError("Error en la búsqueda: " + e.getMessage());
         }
     }
     
@@ -393,9 +477,9 @@ public class ExoTrooperForm extends JFrame {
             return;
         }
         
-        int idExobot = (int) tableModel.getValueAt(selectedRow, 0);
-        String tipoExobot = (String) tableModel.getValueAt(selectedRow, 1);
-        String entrenado = (String) tableModel.getValueAt(selectedRow, 2);
+        int idExobot = (int) tblExobots.getValueAt(selectedRow, 0);
+        String tipoExobot = (String) tblExobots.getValueAt(selectedRow, 1);
+        String entrenado = (String) tblExobots.getValueAt(selectedRow, 2);
         
         // Verificar si ya está entrenado
         if ("SI".equals(entrenado)) {
@@ -414,7 +498,7 @@ public class ExoTrooperForm extends JFrame {
         }
         
         try {
-            // Crear soldado experto en Fusil
+            // Crear soldado experto en Fusil (TU ARMA)
             BusinessLogic.aaEntities.aaSoldadoExperto soldadoExperto = 
                 new BusinessLogic.aaEntities.aaSoldadoExperto("Soldado Experto Fusil", "Fusil");
             
@@ -432,7 +516,7 @@ public class ExoTrooperForm extends JFrame {
             aaCMD.printGood(mensajeExito);
             
             // Actualizar tabla
-            tableModel.setValueAt("SI", selectedRow, 2);
+            tblExobots.setValueAt("SI", selectedRow, 2);
             
             // Actualizar DAO
             exoBotDAO.aaActualizarEntrenamiento(idExobot, true);
@@ -455,9 +539,9 @@ public class ExoTrooperForm extends JFrame {
             return;
         }
         
-        int idExobot = (int) tableModel.getValueAt(selectedRow, 0);
-        String tipoExobot = (String) tableModel.getValueAt(selectedRow, 1);
-        String entrenado = (String) tableModel.getValueAt(selectedRow, 2);
+        int idExobot = (int) tblExobots.getValueAt(selectedRow, 0);
+        String tipoExobot = (String) tblExobots.getValueAt(selectedRow, 1);
+        String entrenado = (String) tblExobots.getValueAt(selectedRow, 2);
         
         // Verificar si está entrenado
         if (!"SI".equals(entrenado)) {
@@ -500,8 +584,8 @@ public class ExoTrooperForm extends JFrame {
             
             if (accionExitosa) {
                 // Incrementar contador de acciones
-                int accionesActuales = (int) tableModel.getValueAt(selectedRow, 3);
-                tableModel.setValueAt(accionesActuales + 1, selectedRow, 3);
+                int accionesActuales = (int) tblExobots.getValueAt(selectedRow, 3);
+                tblExobots.setValueAt(accionesActuales + 1, selectedRow, 3);
                 
                 // Actualizar DAO
                 exoBotDAO.aaIncrementarAcciones(idExobot);

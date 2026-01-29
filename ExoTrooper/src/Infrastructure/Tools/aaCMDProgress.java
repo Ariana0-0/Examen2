@@ -1,4 +1,6 @@
 package Infrastructure.Tools;
+//Refactorización
+
 
 public class aaCMDProgress {
 

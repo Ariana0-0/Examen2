@@ -9,7 +9,6 @@ public class aaRecursoDAO {
         r.setAaIdRecurso(1);
         r.setAaTipo(tipo);
         
-        // Cantidades según tipo
         if (tipo.equals("Munición") || tipo.contains("Munición")) {
             r.setAaCantidad(10);
         } else if (tipo.equals("Energía") || tipo.contains("Energía")) {
@@ -25,7 +24,6 @@ public class aaRecursoDAO {
         aaRecursoDTO r = new aaRecursoDTO();
         r.setAaIdRecurso(1);
         
-        // Asignar tipo y cantidad según arma
         if (arma.equals("Fusil") || arma.equals("Revolver") || 
             arma.equals("Misil") || arma.equals("Mortero") ||
             arma.equals("Laser") || arma.equals("Bayoneta")) {

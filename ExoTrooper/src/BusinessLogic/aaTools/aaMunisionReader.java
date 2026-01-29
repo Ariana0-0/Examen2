@@ -1,68 +1,81 @@
 package BusinessLogic.aaTools;
 
+import Infrastructure.Tools.aaCMD;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
-
+//refactorización
 public class aaMunisionReader {
     
-    public static List<String> aaLeerLineasMunicion() {
-        List<String> lineas = new ArrayList<>();
-        String filePath = "src/storage/DataFiles/ExoMunision.txt";
+    public static String aaBuscarMunicionPorTipo(String tipoBusqueda) {
+        String filePath = "storage/DataFiles/ExoMunision.txt";
         
-        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+        File file = new File(filePath);
+        if (!file.exists()) {
+            aaCMD.printError("Archivo no encontrado: " + filePath);
+            aaCMD.printError("Ruta absoluta: " + file.getAbsolutePath());
+            return "Archivo no encontrado: " + filePath;
+        }
+        
+        List<String> recursosEncontrados = new ArrayList<>();
+        
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String linea;
             while ((linea = br.readLine()) != null) {
-                if (!linea.trim().isEmpty()) {
-                    lineas.add(linea.trim());
-                }
+                procesarLinea(linea, tipoBusqueda, recursosEncontrados);
             }
         } catch (Exception e) {
-            System.err.println("Error leyendo archivo de munición: " + e.getMessage());
+            return "Error leyendo archivo: " + e.getMessage();
         }
-        return lineas;
+        
+        if (recursosEncontrados.isEmpty()) {
+            return "Munición no encontrada para: " + tipoBusqueda;
+        }
+        
+        return recursosEncontrados.get(0);
     }
     
-    public static String aaBuscarMunicionPorTipo(String tipoBusqueda) {
-        List<String> lineas = aaLeerLineasMunicion();
+    private static void procesarLinea(String linea, String tipoBusqueda, List<String> resultados) {
+        linea = linea.replace("\t", " ")
+                     .replace("  ", " ")
+                     .replace(" ,", ",")
+                     .replace(", ", ",")
+                     .trim();
         
-        // Para Fusil, buscar específicamente
-        if (tipoBusqueda.contains("Fusil")) {
-            for (String linea : lineas) {
-                // Buscar líneas que contengan Munición_Fusil
-                if (linea.contains("Munición_Fusil") || linea.contains("Munición_ Fusil")) {
-                    // Extraer solo la parte de la munición
-                    String[] partes = linea.split(",");
-                    for (String parte : partes) {
-                        parte = parte.trim();
-                        if (parte.contains("Fusil")) {
-                            return parte;
-                        }
+        if (linea.isEmpty()) return;
+        
+        String[] elementos = linea.split(",");
+        
+        for (String elemento : elementos) {
+            elemento = elemento.trim();
+            if (elemento.isEmpty()) continue;
+            
+            if (tipoBusqueda.equalsIgnoreCase("Fusil") || 
+                tipoBusqueda.equalsIgnoreCase("Munición_Fusil") ||
+                tipoBusqueda.contains("Fusil")) {
+                
+                if (elemento.contains("Fusil")) {
+                    String limpio = limpiarRecurso(elemento);
+                    if (!resultados.contains(limpio)) {
+                        resultados.add(limpio);
                     }
                 }
             }
-        }
-        
-        // Búsqueda general
-        for (String linea : lineas) {
-            if (linea.contains(tipoBusqueda)) {
-                // Intentar extraer solo el elemento específico
-                String[] elementos = linea.split(",");
-                for (String elemento : elementos) {
-                    elemento = elemento.trim();
-                    if (elemento.contains(tipoBusqueda)) {
-                        return elemento;
-                    }
+            else if (elemento.contains(tipoBusqueda)) {
+                String limpio = limpiarRecurso(elemento);
+                if (!resultados.contains(limpio)) {
+                    resultados.add(limpio);
                 }
-                return linea; // Si no se puede extraer, devolver toda la línea
             }
         }
-        
-        return "Munición no encontrada para: " + tipoBusqueda;
     }
     
-    public static List<String> aaGetTodosLosRecursos() {
-        return aaLeerLineasMunicion();
+    private static String limpiarRecurso(String recurso) {
+        return recurso.replace("_ ", "_")
+                      .replace(" _", "_")
+                      .replace("  ", " ")
+                      .trim();
     }
 }
